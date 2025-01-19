@@ -1,15 +1,15 @@
 use core::arch::asm;
 
-fn sbi_call(
-    mut arg0: u32,
-    mut arg1: u32,
-    arg2: u32,
-    arg3: u32,
-    arg4: u32,
-    arg5: u32,
-    fid: u32,
-    eid: u32,
-) -> Result<u32, u32> {
+pub fn sbi_call(
+    mut arg0: usize,
+    mut arg1: usize,
+    arg2: usize,
+    arg3: usize,
+    arg4: usize,
+    arg5: usize,
+    fid: usize,
+    eid: usize,
+) -> Result<usize, isize> {
     unsafe {
         asm!(
             "ecall",
@@ -27,10 +27,6 @@ fn sbi_call(
     if arg0 == 0 {
         Ok(arg1)
     } else {
-        Err(arg0)
+        Err(arg0 as isize)
     }
-}
-
-pub fn putchar(ch: char) -> Result<u32, u32> {
-    sbi_call(ch as u32, 0, 0, 0, 0, 0, 0, 1)
 }

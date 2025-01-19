@@ -1,11 +1,10 @@
 #![no_std]
 #![no_main]
 
+mod common;
 mod sbi;
-mod util;
 
 use core::{arch::asm, panic::PanicInfo};
-use util::memset;
 
 extern "C" {
     static __bss: u8;
@@ -26,15 +25,22 @@ fn panic(_info: &PanicInfo) -> ! {
 fn kernel_main() {
     unsafe {
         let __bss_mut = __bss as *mut u8;
-        memset(__bss_mut, 0, (__bss_end - __bss).into());
+        common::memset(__bss_mut, 0, (__bss_end - __bss).into());
     }
 
-    let s = "\n\nHello World!\n";
+    let s = "Hello World!";
+
     for c in s.chars() {
-        let _ = sbi::putchar(c);
+        let _ = common::putchar(c);
     }
-
-    unreachable!()
+    println!();
+    print!("{s}");
+    println!();
+    println!("{s}");
+    
+    println!("1 + 2 = {}, {:x}", 1 + 2, 0x1234abcd);
+    
+    unreachable!();
 }
 
 #[no_mangle]
