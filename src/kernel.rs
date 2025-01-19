@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 
+mod sbi;
 mod util;
 
 use core::{arch::asm, panic::PanicInfo};
@@ -26,6 +27,11 @@ fn kernel_main() {
     unsafe {
         let __bss_mut = __bss as *mut u8;
         memset(__bss_mut, 0, (__bss_end - __bss).into());
+    }
+
+    let s = "\n\nHello World!\n";
+    for c in s.chars() {
+        let _ = sbi::putchar(c);
     }
 
     unreachable!()
